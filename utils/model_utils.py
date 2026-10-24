@@ -82,7 +82,7 @@ def make_model_saver(config, tokenizer, run_name=None, save_dir="checkpoints", t
     return save_model
 
 
-def load_model(model_path, config='config.json', tokenizer_path="tokenizer"):
+def load_model(model_path, config='config.json', tokenizer_path="tokenizer", map_location="cuda"):
   model_dir = Path(model_path).parent
   tokenizer_path = model_dir / tokenizer_path
   config_path = model_dir / config
@@ -93,6 +93,6 @@ def load_model(model_path, config='config.json', tokenizer_path="tokenizer"):
   tokenizer = load_tokenizer(tokenizer_path)
 
   model = Transformer(**extract_model_config(config))
-  model.load_state_dict(torch.load(model_path))
+  model.load_state_dict(torch.load(model_path, map_location=map_location))
 
   return model, tokenizer, config

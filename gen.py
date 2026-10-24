@@ -20,7 +20,7 @@ if __name__ == "__main__":
   start = parser.start
   device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-  model, tokenizer, config = load_model(model_path)
+  model, tokenizer, config = load_model(model_path, map_location=device)
   model.to(device)
   model.eval()
   config_display = {k: str(v) for k, v in config.items()}
