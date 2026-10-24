@@ -102,11 +102,14 @@ Note:
         echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
         echo 'eval "$(pyenv init -)"' >> ~/.bashrc
         ```
+
+        Note: If this is a Mac, replace `.bashrc` with `.zshrc` in all three commands above.
     4. Restart shell with command `exec "$SHELL"`
 2. Install Python and the required dependencies
     1. Run `pyenv install 3.12.15`
-    2. Create the virtual environment `pyenv virtualenv 3.12.15 shakespeare`
+    2. Create the virtual environment `pyenv virtualenv 3.12.15 transformer-playground`
     3. Install the required dependencies `python -m pip install -r requirements.txt`
+    4. Note: In an environment powered by CPU such as Mac without MPS or Linux without CUDA, please use the requirements file `requirements-cpu.txt`, which installs native `torch` and `torchvision` pacakges instead of their CUDA counterparts.
 3. Execute training, eval or generation scripts. 
     - To train model, run `python train.py -e <epoch number> -t <tokenizer name> --tokenizer-path <tokenizer saved path> --dataset-path <path to dataset text file> --enable-mixed-precision`. `--enable-wandb` is optional provided environment variable `WANDB_API_KEY` is available to upload training statistics to WandB.
       Note: To use tmux with, for example, training script: 
