@@ -111,10 +111,10 @@ Note:
     3. Install the required dependencies `python -m pip install -r requirements.txt`
     4. Note: In an environment powered by CPU such as Mac without MPS or Linux without CUDA, please use the requirements file `requirements-cpu.txt`, which installs native `torch` and `torchvision` pacakges instead of their CUDA counterparts.
 3. Execute training, eval or generation scripts. 
-    - To train model, run `python train.py -e <epoch number> -t <tokenizer name> --tokenizer-path <tokenizer saved path> --dataset-path <path to dataset text file> --enable-mixed-precision`. `--enable-wandb` is optional provided environment variable `WANDB_API_KEY` is available to upload training statistics to WandB.
+    - To train model, run `python train.py -e <epoch number> --tokenizer-path <tokenizer saved path> --dataset-path <path to dataset text file> --enable-mixed-precision`. `--enable-wandb` is optional provided environment variable `WANDB_API_KEY` is available to upload training statistics to WandB.
       Note: To use tmux with, for example, training script: 
         ```bash
-        tmux new-session -d -s train 'python train.py -e 100 -t bpe --tokenizer-path "data/bpe_tokenizer" --dataset-path "data/output.txt" --enable-wandb --enable-mixed-precision'
+        tmux new-session -d -s train 'python train.py -e 100 --tokenizer-path "data/bpe_tokenizer" --dataset-path "data/output.txt" --enable-wandb --enable-mixed-precision'
         ```
     - To evaluate model on the test dataset, run `python eval.py -m <path to the model>`
     - To genearate response, run `python gen.py -m <path to the model>`
