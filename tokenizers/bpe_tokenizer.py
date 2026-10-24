@@ -55,10 +55,13 @@ class BPETokenizer(TokenizerABC):
 
   def train(self, corpus: str):
     corpus_bytes = self._to_bytes(corpus)
-    vocab = {b.to_bytes(): None for b in corpus_bytes}  # Initial vocab is only raw utf-8 bytes.
-                                                        # Leverage dict's ordered feature to generate
-                                                        # deterministic vocab_to_ind id, given 
-                                                        # corpus_bytes.
+    vocab = {
+      b.to_bytes(): None 
+      for b in sorted(corpus_bytes)
+    } # Initial vocab is only raw utf-8 bytes.
+      # Leverage dict's ordered feature to generate
+      # deterministic vocab_to_ind id, given 
+      # corpus_bytes.
     bytes_counter = Counter(self._pretokenize(corpus_bytes))  # count word bytes frequencies
 
     bytes_lists: list[tuple[list[bytes], int]] = [
