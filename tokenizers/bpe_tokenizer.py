@@ -55,7 +55,10 @@ class BPETokenizer(TokenizerABC):
 
   def train(self, corpus: str):
     corpus_bytes = self._to_bytes(corpus)
-    vocab = set([b.to_bytes() for b in corpus_bytes]) # initial vocab is only raw utf-8 bytes from corpus
+    vocab = {b.to_bytes(): None for b in corpus_bytes}  # Initial vocab is only raw utf-8 bytes.
+                                                        # Leverage dict's ordered feature to generate
+                                                        # deterministic vocab_to_ind id, given 
+                                                        # corpus_bytes.
     bytes_counter = Counter(self._pretokenize(corpus_bytes))  # count word bytes frequencies
 
     bytes_lists: list[tuple[list[bytes], int]] = [
@@ -95,7 +98,7 @@ class BPETokenizer(TokenizerABC):
 
       left = most_frequent_pair[0]
       right = most_frequent_pair[1]
-      vocab.add(left + right)
+      vocab[left + right] = None
       self.merges.append(most_frequent_pair)
 
       # merge the most frequent bytes pairs
@@ -118,7 +121,7 @@ class BPETokenizer(TokenizerABC):
     # construct vocab_to_ind mapping
     self.vocab_to_ind = {}
     token_ind = 0
-    for t in vocab:
+    for t in vocab.keys():
       self.vocab_to_ind[t] = token_ind
       token_ind += 1
 
