@@ -123,10 +123,8 @@ class BPETokenizer(TokenizerABC):
 
     # construct vocab_to_ind mapping
     self.vocab_to_ind = {}
-    token_ind = 0
-    for t in vocab.keys():
-      self.vocab_to_ind[t] = token_ind
-      token_ind += 1
+    for i, t in enumerate(vocab.keys()):
+      self.vocab_to_ind[t] = i
 
     self.ind_to_vocab = {v: k for k, v in self.vocab_to_ind.items()}
 
