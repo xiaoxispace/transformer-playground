@@ -58,7 +58,7 @@ class BPETokenizer(TokenizerABC):
     vocab = set([b.to_bytes() for b in corpus_bytes]) # initial vocab is only raw utf-8 bytes from corpus
     bytes_counter = Counter(self._pretokenize(corpus_bytes))  # count word bytes frequencies
 
-    bytes_lists: list[(list[bytes], int)] = [
+    bytes_lists: list[tuple[list[bytes], int]] = [
       ([i.to_bytes() for i in word_bytes], freq) for
       word_bytes, freq in bytes_counter.items()
     ]
