@@ -4,6 +4,8 @@ import torch
 
 from dataset import prepare_dataset_loader
 from pathlib import Path
+
+from hyperparams import config
 from utils.eval_utils import perplexity
 from utils.model_utils import load_model
 
@@ -19,7 +21,7 @@ if __name__ == '__main__':
   val_end = 0.9  # same as train.py
   device = "cuda" if torch.cuda.is_available() else "cpu"
 
-  model, tokenizer, config = load_model(model_path)
+  model, tokenizer, model_config = load_model(model_path, map_location=device)
   model.to(device)
 
   print("Load dataset to compute metrics.")
@@ -28,7 +30,7 @@ if __name__ == '__main__':
     raw_tokens = file.read()
   token_ids = tokenizer.encode(raw_tokens)
   token_sequence = torch.tensor(token_ids).to(torch.long)
-  train_loader, val_loader, test_loader = prepare_dataset_loader(token_sequence, config["block_size"], config["batch_size"], train_end, val_end)
+  train_loader, val_loader, test_loader = prepare_dataset_loader(token_sequence, model_config["block_size"], config["batch_size"], train_end, val_end)
   print("Load done.\n")
 
   per = perplexity(model, test_loader, device)
