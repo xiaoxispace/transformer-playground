@@ -5,7 +5,6 @@ from collections import Counter
 from pathlib import Path
 from tqdm import tqdm
 
-from data_config import TOKENIZER_VOCAB_TO_IND_FILE_NAME, TOKENIZER_CONFIG_FILE_NAME
 from tokenizers.tokenizer_abc import TokenizerABC
 
 
@@ -40,20 +39,20 @@ class CharTokenizer(TokenizerABC):
   def save(self, path):
     path = Path(path)
     path.mkdir(parents=True, exist_ok=True)
-    vocab_to_ind_path = path / TOKENIZER_VOCAB_TO_IND_FILE_NAME
+    vocab_to_ind_path = path / "vocab_to_ind.json"
     with open(vocab_to_ind_path, "w", encoding="utf-8") as file:
       json.dump(self.vocab_to_ind, file, indent=4)
-    config_path = path / TOKENIZER_CONFIG_FILE_NAME
+    config_path = path / "config.json"
     with open(config_path, "w", encoding="utf-8") as file:
       json.dump(self.config, file, indent=4)
 
   @classmethod
   def load(cls, path):
     path = Path(path)
-    vocab_to_ind_path = path / TOKENIZER_VOCAB_TO_IND_FILE_NAME
+    vocab_to_ind_path = path / "vocab_to_ind.json"
     with open(vocab_to_ind_path, "r", encoding="utf-8") as file:
       vocab_to_ind = json.load(file)
-    config_path = path / TOKENIZER_CONFIG_FILE_NAME
+    config_path = path / "config.json"
     with open(config_path, "r", encoding="utf-8") as file:
       config = json.load(file)
 
