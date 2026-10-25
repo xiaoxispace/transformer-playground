@@ -6,9 +6,12 @@ Executing this file produces
   2. token index of the corpus stored in pytorch tensor of type torch.int32
   3. a json string-to-integer map that denotes each token's number of occurrences. 
 """
+import argparse
 import logging
 import random
 import matplotlib.pyplot as plt
+
+from pathlib import Path
 
 from data_config import TOKENIZER_DATA_PATH
 from hyperparams import config
@@ -88,15 +91,29 @@ def plot_token_counts(token_counts, num_random=15):
   plt.close()
 
 
+dataset_to_tokenizer_suffix = {
+  "shakespeare": "default",
+}
+
 def main():
-  corpus_path = "data/datasets/shakespeare/output.txt"
-  corpus = load_corpus(corpus_path)
+  parser = argparse.ArgumentParser(
+                  prog='tokenizer-training',
+                  description='train a tokenizer for transformer')
+  parser.add_argument('--dataset-paths', nargs='+', type=Path)
+  args = parser.parse_args()
+  dataset_paths = args.dataset_paths
+  corpus = ""
+  for p in dataset_paths:
+    corpus += "\n" + load_corpus(p)
+  corpus = corpus[1:]
+
+  dataset_identifier = "-".join([dataset_to_tokenizer_suffix[p.parent.name] for p in dataset_paths])
 
   tokenizer_config = extract_tokenizer_config(config)
   tokenizer = create_tokenizer(tokenizer_config)
   tokenizer.train(corpus)
   tokenizer_data_path = decide_tokenizer_data_path(
-    tokenizer_config, prefix=TOKENIZER_DATA_PATH
+    tokenizer_config, prefix=TOKENIZER_DATA_PATH, dataset_identifier=dataset_identifier
   )
   tokenizer.save(tokenizer_data_path)
 

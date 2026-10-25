@@ -6,14 +6,14 @@ from tokenizers.char_tokenizer import CharTokenizer
 from tokenizers.bpe_tokenizer import BPETokenizer
 
 
-def decide_tokenizer_data_path(tokenizer_config, prefix, dataset='default'):
+def decide_tokenizer_data_path(tokenizer_config, prefix, dataset_identifier='default'):
   tokenizer = tokenizer_config["tokenizer"]
   prefix = Path(prefix)
   if tokenizer == "char":
-    return prefix / (tokenizer + "_" + dataset)
+    return prefix / (tokenizer + "_" + dataset_identifier)
   elif tokenizer == "bpe":
     thresh = tokenizer_config["threshold"]
-    return prefix / (tokenizer + "_" + dataset + "_" + f"threshold{thresh}")
+    return prefix / (tokenizer + "_" + dataset_identifier + "_" + f"threshold{thresh}")
 
 
 def extract_tokenizer_config(config):
