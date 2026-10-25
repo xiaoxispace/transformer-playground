@@ -9,7 +9,8 @@ import wandb
 
 from tqdm import tqdm
 
-from datasets.dataset import prepare_dataset_loader
+from data_config import SHAKESPEARE_OUTPUT_PATH
+from utils.dataset_utils import prepare_dataset_loader
 from hyperparams import config
 from models.transformer import Transformer
 from utils.model_utils import make_model_saver, extract_model_config
@@ -143,7 +144,7 @@ if __name__ == "__main__":
                   description='pretrain shakespeare transformer')
   parser.add_argument('-e', '--epochs', default=100, type=int)
   parser.add_argument('--tokenizer-path', type=str)
-  parser.add_argument('--dataset-path', type=str)
+  parser.add_argument('--dataset-paths', nargs='+', type=str)
   parser.add_argument('--enable-wandb', action='store_true')
   parser.add_argument('--enable-mixed-precision', action='store_true')
   parser.add_argument('--deterministic-training', action='store_true')
@@ -151,13 +152,13 @@ if __name__ == "__main__":
   args = parser.parse_args()
   epochs = args.epochs
   tokenizer_path = args.tokenizer_path
-  dataset_path = args.dataset_path
+  dataset_paths = args.dataset_paths
   enable_wandb = args.enable_wandb
   enable_mixed_precision = args.enable_mixed_precision
   deterministic_training = args.deterministic_training
 
-  train_end = 0.7
-  val_end = 0.9
+  train_end = config['train_end']
+  val_end = config['val_end']
 
   block_size = config['block_size']
   batch_size = config['batch_size']
@@ -179,11 +180,7 @@ if __name__ == "__main__":
   print("Loading tokenizer done.")
 
   print("Preparing dataset loader ...")
-  with open(dataset_path, 'r', encoding='utf-8') as file:
-    raw_tokens = file.read()
-  token_ids = tokenizer.encode(raw_tokens)
-  token_sequence = torch.tensor(token_ids).to(torch.long)
-  train_loader, val_loader, test_loader = prepare_dataset_loader(token_sequence, block_size, batch_size, train_end, val_end)
+  train_loader, val_loader, test_loader = prepare_dataset_loader(dataset_paths, tokenizer, train_end, val_end, block_size, batch_size)
   print("Dataset loader ready.")
 
   model = Transformer(**extract_model_config(config)).to(device)

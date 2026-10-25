@@ -7,6 +7,17 @@ logger = logging.getLogger("preprocess")
 
 
 class ShakespearePlayDatasetPreprocessor(PreprocessorABC):
+  """
+  This is the preprocessor for Shakespeare datasets. The preprocessor completes
+  the following tasks:
+
+  1. Reads all the plays under data/shakespeares-works_TXT_FolgerShakespeare
+  2. Strip all the comments before "Characters in the Play" (if any)
+  3. Remove all the lines of "=" separator in each play
+  4. Concatenate all the players into one single txt file
+
+  Note: The headers of plays without "Characters in Play" are removed manually.
+  """
   @classmethod
   def _read_play_file(cls, file_path):
     with open(file_path, "r", encoding="utf-8") as f:

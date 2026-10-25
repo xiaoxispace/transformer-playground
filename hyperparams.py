@@ -20,5 +20,7 @@ config = {
   "tokenizer": "bpe",
   "bpe_vocab_threshold": 500,
   # dataset parameters
-  "dataset": "shakespeare"
+  "dataset": "shakespeare",
+  "train_end": 0.7,
+  "val_end": 0.9,
 }
