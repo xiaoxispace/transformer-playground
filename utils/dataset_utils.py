@@ -2,7 +2,7 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from datasets.dataset import LanguageModelingDataset
+from dataset import LanguageModelingDataset
 
 
 def load_and_split_dataset_tensor(dataset_path, tokenizer, train_end, val_end):
