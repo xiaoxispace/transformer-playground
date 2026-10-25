@@ -16,13 +16,13 @@ class CharTokenizer(TokenizerABC):
     self.ind_to_vocab = {}
     self.config = {"tokenizer": "char"}
 
-  def train(self, corpus, **kwargs):
-    raw_tokens = self._tokenize_play(corpus)
+  def train(self, text, **kwargs):
+    raw_tokens = self._tokenize_play(text)
     self.vocab_to_ind, self.token_counts = self._build_vocabulary(raw_tokens)
     counts = torch.tensor(list(self.token_counts.values()), dtype=torch.int32)
     print("Summary statistics:")
     print(f"Token number: {len(self.token_counts)}")
-    print(f"Corpuse raw token count: {len(raw_tokens)}")
+    print(f"Text raw token count: {len(raw_tokens)}")
     print("Tokens appearing once:", (counts == 1).sum())
     print("Tokens appearing <= 5:", (counts <= 5).sum())
     print("Tokens appearing <= 10:", (counts <= 10).sum())

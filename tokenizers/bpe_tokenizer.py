@@ -37,33 +37,33 @@ class BPETokenizer(TokenizerABC):
     self.ind_to_vocab = {}  # lazy evaluation
     self.merges = []
 
-  def _pretokenize(self, corpus: bytes) -> list[bytes]:
+  def _pretokenize(self, text_bytes: bytes) -> list[bytes]:
     """
     Simple pre-tokenization logic to group consecutive letters as a word, any other 
     special characters or numbers are one word by each char.
 
-    The reason is: Text matters in plays. The separators are more important by 
+    The reason is: Text matters more in plays. The separators are more important by 
     themselves. The numbers are not that important in generating plays. 
     """
-    pieces = BPETokenizer.PRETOKEN_RE.findall(corpus)
+    pieces = BPETokenizer.PRETOKEN_RE.findall(text_bytes)
     return pieces
 
-  def _to_bytes(self, corpus: str):
-    return corpus.encode(encoding="utf-8", errors='ignore')
+  def _to_bytes(self, text: str):
+    return text.encode(encoding="utf-8", errors='ignore')
 
   def _to_str(self, bytes_: bytes | bytearray):
     return bytes_.decode(encoding="utf-8", errors='ignore')
 
-  def train(self, corpus: str):
-    corpus_bytes = self._to_bytes(corpus)
+  def train(self, text: str):
+    text_bytes = self._to_bytes(text)
     vocab = {
       b.to_bytes(): None 
-      for b in sorted(corpus_bytes)
+      for b in sorted(text_bytes)
     } # Initial vocab is only raw utf-8 bytes.
       # Leverage dict's ordered feature to generate
       # deterministic vocab_to_ind id, given 
-      # corpus_bytes.
-    bytes_counter = Counter(self._pretokenize(corpus_bytes))  # count word bytes frequencies
+      # text_bytes.
+    bytes_counter = Counter(self._pretokenize(text_bytes))  # count word bytes frequencies
 
     bytes_lists: list[tuple[list[bytes], int]] = [
       ([i.to_bytes() for i in word_bytes], freq) for
@@ -129,9 +129,9 @@ class BPETokenizer(TokenizerABC):
 
     self.ind_to_vocab = {v: k for k, v in self.vocab_to_ind.items()}
 
-  def encode(self, corpus: str):
-    corpus_bytes = self._to_bytes(corpus)
-    bytes_lists = self._pretokenize(corpus_bytes)
+  def encode(self, text: str):
+    text_bytes = self._to_bytes(text)
+    bytes_lists = self._pretokenize(text_bytes)
     result = []
 
     for bytes_list in bytes_lists:
