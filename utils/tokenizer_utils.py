@@ -2,12 +2,11 @@ import json
 
 from pathlib import Path
 
-from data_config import TOKENIZER_DATA_PATH, TOKENIZER_CONFIG_FILE_NAME
 from tokenizers.char_tokenizer import CharTokenizer
 from tokenizers.bpe_tokenizer import BPETokenizer
 
 
-def decide_tokenizer_data_path(tokenizer_config, prefix=TOKENIZER_DATA_PATH, dataset='default'):
+def decide_tokenizer_data_path(tokenizer_config, prefix, dataset='default'):
   tokenizer = tokenizer_config["tokenizer"]
   prefix = Path(prefix)
   if tokenizer == "char":
@@ -41,7 +40,7 @@ def create_tokenizer(config):
 
 def load_tokenizer(tokenizer_path):
   tokenizer_path = Path(tokenizer_path)
-  tokenizer_config_path = tokenizer_path / TOKENIZER_CONFIG_FILE_NAME
+  tokenizer_config_path = tokenizer_path / "config.json"
   with open(tokenizer_config_path, "r", encoding="utf-8") as file:
     tokenizer_config = json.load(file)
   tokenizer_name = tokenizer_config["tokenizer"]

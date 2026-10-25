@@ -10,7 +10,7 @@ import logging
 import random
 import matplotlib.pyplot as plt
 
-from data_config import PLAT_TEXT_OUTPUT_PATH
+from data_config import TOKENIZER_DATA_PATH
 from hyperparams import config
 from utils.tokenizer_utils import create_tokenizer, decide_tokenizer_data_path, extract_tokenizer_config
 
@@ -89,13 +89,15 @@ def plot_token_counts(token_counts, num_random=15):
 
 
 def main():
-  corpus_path = PLAT_TEXT_OUTPUT_PATH
+  corpus_path = "data/datasets/shakespeare/output.txt"
   corpus = load_corpus(corpus_path)
 
   tokenizer_config = extract_tokenizer_config(config)
   tokenizer = create_tokenizer(tokenizer_config)
   tokenizer.train(corpus)
-  tokenizer_data_path = decide_tokenizer_data_path(tokenizer_config)
+  tokenizer_data_path = decide_tokenizer_data_path(
+    tokenizer_config, prefix=TOKENIZER_DATA_PATH
+  )
   tokenizer.save(tokenizer_data_path)
 
   # token_ids = tokenizer.encode(corpus)

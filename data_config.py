@@ -4,12 +4,12 @@ the "data/" directory.
 """
 from pathlib import Path
 
-SHAKESPEARES_PLAY_DIR = Path("data/shakespeares-works_TXT_FolgerShakespeare")
-PLAT_TEXT_OUTPUT_PATH = Path("data/output.txt")
+DATASETS = ("shakespeare")
+
 
 DATASETS_DIR = Path("data/datasets")
 
-TOKENIZER_VOCAB_TO_IND_FILE_NAME = "vocab_to_ind.json"
-TOKENIZER_CONFIG_FILE_NAME = "config.json"
+SHAKESPEARE_PLAY_DIR = DATASETS_DIR / "shakespeare" / "shakespeares-works_TXT_FolgerShakespeare"
+SHAKESPEARE_OUTPUT_PATH = DATASETS_DIR / "shakespeare" / "output.txt"
 
 TOKENIZER_DATA_PATH = Path("data/tokenizers")

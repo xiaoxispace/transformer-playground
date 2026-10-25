@@ -7,7 +7,6 @@ from collections import Counter
 from pathlib import Path
 from tqdm import tqdm
 
-from data_config import TOKENIZER_VOCAB_TO_IND_FILE_NAME, TOKENIZER_CONFIG_FILE_NAME
 from tokenizers.tokenizer_abc import TokenizerABC
 
 logging.basicConfig(level=logging.INFO)
@@ -180,12 +179,12 @@ class BPETokenizer(TokenizerABC):
     path.mkdir(parents=True, exist_ok=True)
 
     # save config
-    config_path = path / TOKENIZER_CONFIG_FILE_NAME
+    config_path = path / "config.json"
     with open(config_path, "w", encoding="utf-8") as file:
       json.dump(self.config, file, indent=4)
 
     # save vocab_to_ind
-    vocab_to_ind_path = path / TOKENIZER_VOCAB_TO_IND_FILE_NAME
+    vocab_to_ind_path = path / "vocab_to_ind.json"
     encoded_vocab_to_ind = {
       # need to convert raw bytes to encodings before storing in json
       _base64_encode(k): v for k, v in self.vocab_to_ind.items()
@@ -203,12 +202,12 @@ class BPETokenizer(TokenizerABC):
   def load(cls, path):
     path = Path(path)
     # load config
-    config_path = path / TOKENIZER_CONFIG_FILE_NAME
+    config_path = path / "config.json"
     with open(config_path, "r", encoding="utf-8") as file:
       config = json.load(file)
 
     # load vocab_to_ind
-    vocab_to_ind_path = path / TOKENIZER_VOCAB_TO_IND_FILE_NAME
+    vocab_to_ind_path = path / "vocab_to_ind.json"
     with open(vocab_to_ind_path, "r", encoding="utf-8") as file:
       encoded_vocab_to_ind = json.load(file)
     vocab_to_ind = {
