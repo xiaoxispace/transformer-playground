@@ -3,6 +3,13 @@ import re
 from lxml import etree
 
 class _SHCPreprocessor:
+    """
+    This processor parses play XML file from the Shakespeare His Contemporaries 
+    (SHC) project.
+
+    For details regarding how to download a list of XML plays annotated by the 
+    SHC project, see the Datasets section in the README.md.
+    """
 
     # ---------- helpers ----------
 

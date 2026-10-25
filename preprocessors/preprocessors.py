@@ -63,14 +63,16 @@ class ShakespearePlayDatasetPreprocessor(PreprocessorABC):
 
 
 class EMEDDatasetPreprocessor(PreprocessorABC):
-    @classmethod
-    def preprocess(cls, text_input_path, text_output_path):
-        data_path = Path(text_input_path)
-        output_path = Path(text_output_path)
-        output_parts = []
-        for file_path in tqdm(sorted(data_path.glob("*.xml")), desc="Process EMED datasets", unit="files"):
-            text = _SHCPreprocessor._preprocess_shc(file_path)
-            if text.strip():
-                output_parts.append(text)
-        output = "\n\n".join(output_parts)
-        cls._store_corpus(output, output_path)
+  """This processor delegates XML parsing task to _SHCPreprocessor."""
+
+  @classmethod
+  def preprocess(cls, text_input_path, text_output_path):
+    data_path = Path(text_input_path)
+    output_path = Path(text_output_path)
+    output_parts = []
+    for file_path in tqdm(sorted(data_path.glob("*.xml")), desc="Process EMED datasets", unit="files"):
+      text = _SHCPreprocessor._preprocess_shc(file_path)
+      if text.strip():
+        output_parts.append(text)
+    output = "\n\n".join(output_parts)
+    cls._store_corpus(output, output_path)
