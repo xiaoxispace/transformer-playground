@@ -9,7 +9,7 @@ import wandb
 
 from tqdm import tqdm
 
-from dataset import prepare_dataset_loader
+from datasets.dataset import prepare_dataset_loader
 from hyperparams import config
 from models.transformer import Transformer
 from utils.model_utils import make_model_saver, extract_model_config
@@ -146,6 +146,7 @@ if __name__ == "__main__":
   parser.add_argument('--dataset-path', type=str)
   parser.add_argument('--enable-wandb', action='store_true')
   parser.add_argument('--enable-mixed-precision', action='store_true')
+  parser.add_argument('--deterministic-training', action='store_true')
 
   args = parser.parse_args()
   epochs = args.epochs
@@ -153,6 +154,7 @@ if __name__ == "__main__":
   dataset_path = args.dataset_path
   enable_wandb = args.enable_wandb
   enable_mixed_precision = args.enable_mixed_precision
+  deterministic_training = args.deterministic_training
 
   train_end = 0.7
   val_end = 0.9

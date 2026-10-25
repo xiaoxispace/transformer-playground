@@ -4,7 +4,7 @@ import torch.nn as nn
 
 from torch.utils.data import DataLoader, SequentialSampler
 
-from dataset import LanguageModelingDataset
+from datasets.dataset import LanguageModelingDataset
 from utils.eval_utils import perplexity
 from hyperparams import *
 

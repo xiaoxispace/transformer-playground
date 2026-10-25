@@ -2,7 +2,7 @@
 import argparse
 import torch
 
-from dataset import prepare_dataset_loader
+from datasets.dataset import prepare_dataset_loader
 from pathlib import Path
 
 from hyperparams import config
