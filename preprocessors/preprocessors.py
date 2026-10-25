@@ -1,8 +1,9 @@
 import logging
 
+from tqdm import tqdm
 from pathlib import Path
 
-from .emed_subpreprocessors import _SHCPreprocessor, _EEBOTCPPreprocessor
+from .emed_subpreprocessors import _SHCPreprocessor
 from .preprocessor_abc import PreprocessorABC
 
 logging.basicConfig(level=logging.INFO)
@@ -67,12 +68,8 @@ class EMEDDatasetPreprocessor(PreprocessorABC):
         data_path = Path(text_input_path)
         output_path = Path(text_output_path)
         output_parts = []
-        for file_path in sorted(data_path.glob("*.xml")):
-            file_name = file_path.name
-            if len(file_name) >= 7 and file_name[4:7] == "SHC":
-                text = _SHCPreprocessor._preprocess_shc(file_path)
-            else:
-                text = _EEBOTCPPreprocessor._preprocess_regularized_EEBO_TCP(file_path)
+        for file_path in tqdm(sorted(data_path.glob("*.xml")), desc="Process EMED datasets", unit="files"):
+            text = _SHCPreprocessor._preprocess_shc(file_path)
             if text.strip():
                 output_parts.append(text)
         output = "\n\n".join(output_parts)
