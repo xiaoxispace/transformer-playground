@@ -5,3 +5,5 @@ tqdm
 matplotlib
 numpy
 pytest
+lxml
+lxml-stubs

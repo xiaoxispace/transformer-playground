@@ -1,5 +1,8 @@
 import logging
 
+from pathlib import Path
+
+from .emed_subpreprocessors import _SHCPreprocessor, _EEBOTCPPreprocessor
 from .preprocessor_abc import PreprocessorABC
 
 logging.basicConfig(level=logging.INFO)
@@ -43,11 +46,6 @@ class ShakespearePlayDatasetPreprocessor(PreprocessorABC):
     )
 
   @classmethod
-  def _store_corpus(cls, text, output_path):
-    with open(output_path, "w", encoding="utf-8") as f:
-      f.write(text)
-
-  @classmethod
   def preprocess(cls, text_input_path, text_output_path):
     data_path = text_input_path
     output_path = text_output_path
@@ -61,3 +59,21 @@ class ShakespearePlayDatasetPreprocessor(PreprocessorABC):
       logger.info("Done appending.")
     output = output[1:]  # remove the first \n
     cls._store_corpus(output, output_path)
+
+
+class EMEDDatasetPreprocessor(PreprocessorABC):
+    @classmethod
+    def preprocess(cls, text_input_path, text_output_path):
+        data_path = Path(text_input_path)
+        output_path = Path(text_output_path)
+        output_parts = []
+        for file_path in sorted(data_path.glob("*.xml")):
+            file_name = file_path.name
+            if len(file_name) >= 7 and file_name[4:7] == "SHC":
+                text = _SHCPreprocessor._preprocess_shc(file_path)
+            else:
+                text = _EEBOTCPPreprocessor._preprocess_regularized_EEBO_TCP(file_path)
+            if text.strip():
+                output_parts.append(text)
+        output = "\n\n".join(output_parts)
+        cls._store_corpus(output, output_path)
