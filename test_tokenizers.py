@@ -101,7 +101,7 @@ def test_bpe_train_large_corpus():
 
 
 def test_bpe_pretokenize():
-  corpus_bytes = b"Hello, world! There's no stop _in word! ^&*)()%$#@!~`'\";:/?.>,<\\|-_=+\t\n"
+  text_bytes = b"Hello, world! There's no stop _in word! ^&*)()%$#@!~`'\";:/?.>,<\\|-_=+\t\n"
   expected = [
     b"Hello", b",", b" ", b"world", b"!", b" ",
     b"There", b"'", b"s", b" ", b"no", b" ", b"stop", b" ",
@@ -110,7 +110,7 @@ def test_bpe_pretokenize():
     b";", b":", b"/", b"?", b".", b">", b",", b"<", b"\\", b"|", b"-", b"_", b"=", b"+", b"\t", b"\n"
   ]
   t = BPETokenizer(50)
-  res = t._pretokenize(corpus_bytes)
+  res = t._pretokenize(text_bytes)
   assert res == expected
 
 

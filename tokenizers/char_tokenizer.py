@@ -3,6 +3,7 @@ import torch
 
 from collections import Counter
 from pathlib import Path
+from tqdm import tqdm
 
 from data_config import TOKENIZER_VOCAB_TO_IND_FILE_NAME, TOKENIZER_CONFIG_FILE_NAME
 from tokenizers.tokenizer_abc import TokenizerABC
@@ -15,13 +16,13 @@ class CharTokenizer(TokenizerABC):
     self.ind_to_vocab = {}
     self.config = {"tokenizer": "char"}
 
-  def train(self, corpus, **kwargs):
-    raw_tokens = self._tokenize_play(corpus)
+  def train(self, text, **kwargs):
+    raw_tokens = self._tokenize_play(text)
     self.vocab_to_ind, self.token_counts = self._build_vocabulary(raw_tokens)
     counts = torch.tensor(list(self.token_counts.values()), dtype=torch.int32)
     print("Summary statistics:")
     print(f"Token number: {len(self.token_counts)}")
-    print(f"Corpuse raw token count: {len(raw_tokens)}")
+    print(f"Text raw token count: {len(raw_tokens)}")
     print("Tokens appearing once:", (counts == 1).sum())
     print("Tokens appearing <= 5:", (counts <= 5).sum())
     print("Tokens appearing <= 10:", (counts <= 10).sum())
@@ -65,14 +66,15 @@ class CharTokenizer(TokenizerABC):
   def vocab_size(self):
     return len(self.vocab_to_ind)
 
-  def _tokenize_play(self, play_string):
+  def _tokenize_play(self, text):
     """Tokenize text at character level."""
     raw_tokens = []
-    i = 0
-    while i < len(play_string):
-      c = play_string[i]
+    for i in tqdm(
+      range(len(text)),
+      desc=f"Collect chars from text of size {len(text)}"
+    ):
+      c = text[i]
       raw_tokens.append(c)
-      i += 1
     return raw_tokens
 
   def _build_vocabulary(self, raw_tokens):
@@ -80,7 +82,8 @@ class CharTokenizer(TokenizerABC):
     token_counts = Counter(raw_tokens)
 
     # Sort for deterministic vocabulary construction.
-    vocab = sorted(token_counts, reverse=True)
+    vocab = sorted(token_counts.keys(), reverse=True) 
+      # make it clear that sort on the reverse of token's lexical order
 
     vocab_to_ind = {
       token: i

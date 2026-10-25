@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class TokenizerABC(ABC):
   @abstractmethod
-  def train(self, corpus, **kwargs):
+  def train(self, text, **kwargs):
     pass
 
   @abstractmethod
@@ -16,7 +16,7 @@ class TokenizerABC(ABC):
     pass
 
   @abstractmethod
-  def encode(self, corpus):
+  def encode(self, text):
     pass
 
   @abstractmethod
