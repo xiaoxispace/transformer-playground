@@ -5,6 +5,7 @@ import re
 
 from collections import Counter
 from pathlib import Path
+from tqdm import tqdm
 
 from data_config import TOKENIZER_VOCAB_TO_IND_FILE_NAME, TOKENIZER_CONFIG_FILE_NAME
 from tokenizers.tokenizer_abc import TokenizerABC
@@ -76,7 +77,7 @@ class BPETokenizer(TokenizerABC):
 
     self.merges = []
 
-    for _ in range(merge_counts):
+    for _ in tqdm(range(merge_counts), desc=f"Training BPE {merge_counts} merges", unit="merge"):
       pair_counter = Counter()
 
       for (sequence, freq) in bytes_lists:
