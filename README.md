@@ -106,6 +106,8 @@ Note: tokenizer does not include any of the special tokens such as `BOS` (the be
 
 # Training Setup
 
+The training pipeline accepts a tokenizer and a seuqence of corpus paths as input. The tokenizer will tokenize the text corpus, split and combine them into training, validation, and test datasets. 
+
 ## Download and Preprocess Datasets
 
 Currently, there are two datasets available for training Transformers, Shakespeare's play texts (dataset name: `shakespeare`) and Shakespeare's contemporary plays (dataset name: `emed`). 
