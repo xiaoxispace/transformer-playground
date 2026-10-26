@@ -72,7 +72,6 @@ class EMEDDatasetPreprocessor(PreprocessorABC):
     output_parts = []
     for file_path in tqdm(sorted(data_path.glob("*.xml")), desc="Process EMED datasets", unit="files"):
       text = _SHCPreprocessor._preprocess_shc(file_path)
-      if text.strip():
-        output_parts.append(text)
+      output_parts.append(text)
     output = "\n\n".join(output_parts)
     cls._store_corpus(output, output_path)
