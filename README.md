@@ -1,6 +1,9 @@
 # Transformer Playground
 
-A playground for people interested in transformers to experiment. 
+A playground for people interested in experimenting with Transformers. The goal is to set up a concrete project that demonstrates:
+1. Different components of training language models, including dataset curation, initialization and training of both the tokenizer and the model, evaluation, and generation.
+2. How these components interact with each other to form training, evaluation, and generation pipelines.
+3. Pointers to modern implementations and optimizations for these components and pipelines.
 
 # Quick Start
 
