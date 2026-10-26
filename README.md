@@ -76,7 +76,7 @@ With these part; what cruel thee th
 
 </details>
 
-For details to setup an environment, refer to the [Install Python Environment](# install-python-environment) section.
+For details to setup an environment, refer to the [Install Python Environment](#install-python-environment) section.
 
 Note: tokenizer does not include any of the special tokens such as `BOS` (the beginning of a sequence), `EOS` (end of sequence), `UNK` unknown token, etc. So the start and end of the generation is controlled by input prompt and fixed generation length respectively. 
 
