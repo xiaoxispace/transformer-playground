@@ -1,3 +1,6 @@
+##### gitignored datasets
+data/datasets/emed/plays
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

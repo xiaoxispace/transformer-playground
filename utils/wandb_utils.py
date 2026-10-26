@@ -12,8 +12,9 @@ def normalize_wandb_config(config):
   return wandb_config
 
 
-def setup_wandb(config, enable_wandb):
+def setup_wandb(config, enable_wandb, dataset_names):
   wandb_config = normalize_wandb_config(config)
+  wandb_config["datasets"] = dataset_names
   if enable_wandb:
     wandb.init(
       project="shakespeare-transformer",

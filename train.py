@@ -7,9 +7,9 @@ import torch.nn as nn
 import torch.optim as optim
 import wandb
 
+from pathlib import Path
 from tqdm import tqdm
 
-from data_config import SHAKESPEARE_OUTPUT_PATH
 from utils.dataset_utils import prepare_dataset_loader
 from hyperparams import config
 from models.transformer import Transformer
@@ -171,7 +171,8 @@ if __name__ == "__main__":
     and torch.cuda.is_bf16_supported()
   )
 
-  run_name = setup_wandb(config, enable_wandb)
+  dataset_names = [Path(p).parent for p in dataset_paths]
+  run_name = setup_wandb(config, enable_wandb, dataset_names)
 
   print("Hello World!")
   print(f"Loading tokenizer from path {tokenizer_path} ...")

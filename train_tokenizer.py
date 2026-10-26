@@ -93,6 +93,7 @@ def plot_token_counts(token_counts, num_random=15):
 
 dataset_to_tokenizer_suffix = {
   "shakespeare": "default",
+  "emed": "emed"
 }
 
 def main():
