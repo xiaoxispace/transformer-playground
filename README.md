@@ -2,87 +2,80 @@
 
 A playground for people interested in transformers to experiment. 
 
-# Example output
+# Quick Start
 
+## Generate Plays
 
+To generate plays using the project's checkpoints, execute the command
+
+```bash
+python gen.py -m <path to a checkpoint .pth file>
 ```
-(shakespeare) ubuntu@193-122-144-209:~/dev/shakespeare-transformer$ python eval.py -m "data/model-final.pth"
-Loading vocab ...
-Vocab size:  83
-Done loading vocab ...
 
-Construct and load model ...
-Construct and load model done.
-
-================================
-|| Begin generating contents: ||
-================================
-
- puppets me falls, and down so in his cries
-For thy fleet all edge me commended
-With other to school of him thou dost quick crries.
-If very doubt, Nature my father's feather.
-
-SIR HUGH  Now, is is this from thus?
-
-POLONIUS
-I thank you faith-wilted, be dismission, get the other.
-If thou best thou whoreson, with all appears
-Blots, go with speak stock, or God's name
-Doth she lie it it dower threater king?
-
-GLOUCESTER
-We'll said she, their gaze was fair Tito's vow.
-
-TIMON
-After did me than thou mean and children on so far
-We have may blood) too.
-
-[Enter Talbot.]
-
-
-MESSENGER
-Have you to York. Nurse! If he be marriages thing.
-He loves the brother's name? Why, sir?
-What means depart I'll like thee preserve.
-
-POET  Where, bring him. By guess that you bear,
-Not would say bondman.
-
-BEROWNE  Not a pax the for who, of mother?
-
-BOATSWAIN  Nay, if my lord of greater sake,
-What is order,
-And yet forgive shine own part. Therefore.
-
-ULYSSES
-That feather they offerent Caesar. I shall
-Believe me soon pla
-```
+The number of tokens to generate and the prompt can be specified by the parameter `-l <an integer>` and `-s <a string>`. 
 
 <details>
-  <summary>Training Hyperparameters</summary>
-  The hyperparameters used for the model generating the above outputs are:
 
-  ```
-  epoch = 100
-  block_size = 64
-  batch_size = 256
-  dmodel = 256 
-  learning_rate = 0.00001
-  cuda_available = torch.cuda.is_available()
-  num_of_encoder_layers = 3
-  num_of_heads = 4
-  decoder_only = True
-  ```
+To generate using the checkpoint `checkpoints/ctx384-3e-5/best_model_ctx384_d256_L3_H4_lr3e-05_dropout1e-01_e47.pth` with length 2000 tokens and prompt "Hello", one can use the command `python gen.py -m "checkpoints/ctx384-3e-5/best_model_ctx384_d256_L3_H4_lr3e-05_dropout1e-01_e47.pth" -l 2000 -s "Hello"`.
+
+An example output is shown below. 
+
+<summary>Generation example with model of 384 context size</summary>
+
+```
+Model config:  {
+  "block_size": "384",
+  "dmodel": "256",
+  "dropout": "0.1",
+  "num_of_decoder_layers": "3",
+  "num_of_encoder_layers": "3",
+  "num_of_heads": "4",
+  "decoder_only": "True",
+  "vocab_size": "83"
+}
+|| Begin generating contents: ||
+w.
+
+LEAR
+Call this things in my dimate of alungbrace
+And we have dukedom of Guard thee fingers.
+Which doth stiny a brough in sway, set here buard
+Where he haste ward us find her faithful men?
+But be rest, and not did groans, for eyes,
+Did be sword, one foreign receive that morning
+That have all knows, the true distance,
+Franciscience. Fetch double spurse
+As daughter business. I am of pay live with
+let on my left fools examine, and those and,
+And that which he searest the right
+That can such a triumphant our dukes were as guard,
+Which he shall have sway oswed by his looks?
+
+NORTHUMBERLAND
+But think of them wears.
+[To Servant exits.]
+
+Scene 5
+[Enter Hector is of York Hero, are Peter Queen,
+Clarence, Clifford, looked a back of spirit,
+And will unworthy Marina, if peace!
+
+[Enter Antonyes.]
+
+
+ARCHBISHOP  Sha, she takes a prize of war,
+Which I mights many be done thanked of your
+fellow him. Even I might enemies. [They all the Near.] What have shall?
+
+ROMEO
+With these part; what cruel thee th
+```
 
 </details>
 
-Note: 
-- The model generating the example output is not saved as one of the checkpoints. A similar checkpoint can be found under `checkpoints/ctx64`, where the learning rate is by default, `0.0003`.
-- The model output was truncated by length, as to keep the simplicity, tokenizer does not include any of the special tokens such as `BOS` (the beginning of a sequence), `EOS` (end of sequence), `UNK` unknown token, etc.
+For details to setup an environment, refer to the [Install Python Environment](# install-python-environment) section.
 
-# Setup
+Note: tokenizer does not include any of the special tokens such as `BOS` (the beginning of a sequence), `EOS` (end of sequence), `UNK` unknown token, etc. So the start and end of the generation is controlled by input prompt and fixed generation length respectively. 
 
 ## Install Python Environment
 
@@ -110,54 +103,43 @@ Note:
     2. Create the virtual environment `pyenv virtualenv 3.12.15 transformer-playground`
     3. Install the required dependencies `python -m pip install -r requirements.txt`
     4. Note: In an environment powered by CPU such as Mac without MPS or Linux without CUDA, please use the requirements file `requirements-cpu.txt`, which installs native `torch` and `torchvision` pacakges instead of their CUDA counterparts.
-3. Execute training, eval or generation scripts. 
-    - To train model, run `python train.py -e <epoch number> --tokenizer-path <tokenizer saved path> --dataset-path <path to dataset text file> --enable-mixed-precision`. `--enable-wandb` is optional provided environment variable `WANDB_API_KEY` is available to upload training statistics to WandB.
-      Note: To use tmux with, for example, training script: 
-        ```bash
-        tmux new-session -d -s train 'python train.py -e 100 --tokenizer-path "data/bpe_tokenizer" --dataset-path "data/output.txt" --enable-wandb --enable-mixed-precision'
-        ```
-    - To evaluate model on the test dataset, run `python eval.py -m <path to the model>`
-    - To genearate response, run `python gen.py -m <path to the model>`
+
+# Training Setup
+
+## Download and Preprocess Datasets
+
+Currently, there are two datasets available for training Transformers, Shakespeare's play texts (dataset name: `shakespeare`) and Shakespeare's contemporary plays (dataset name: `emed`). 
+
+Each dataset is stored under `data/datasets/<dataset name>`. The Shakespeare dataset has its raw data in the repo. For EMED dataset, a download script and a list of links to the plays are provided for not storing large set of XML files in the repo. Please execute `./download_shc.sh links.txt plays/` under `data/datasets/emed` to have the XML files ready for preprocessing. 
+
+To preprocess a dataset, execute `python preprocess.py --dataset <dataset name>` at the project root. The concatenated text corpus will be produced as `output.txt` under each dataset's directory. The text file `output.txt` can be used to train tokenizers or a Transformer model after being tokenized. 
 
 ## Default Parameters
 
-The default parameters is as follows. Note that `bpe_vocab_threshold` is only valid when `tokenizer` is `bpe`. 
-<details>
-  <summary>Hyperparameters Specification</summary>
+The default parameters for training tokenizers or Transformer models exist in `hyperparams.py`. Note that `bpe_vocab_threshold` is only valid when `tokenizer` is `bpe`. 
 
-  ```python
-  config = {
-    # model parameters
-    "block_size": 256,
-    "dmodel": 256,
-    "dropout": 0.1,
-    "num_of_decoder_layers": 3,
-    "num_of_encoder_layers": 3,
-    "num_of_heads": 4,
-    "decoder_only": True,
-    # training parameters
-    "batch_size": 256,
-    "cuda_available": torch.cuda.is_available(),
-    "device": "cuda" if torch.cuda.is_available() else "cpu",
-    "learning_rate": 3e-4,
-    # tokenizer parameters
-    "tokenizer": "char",
-    "bpe_vocab_threshold": 500,
-    # dataset parameters
-    "dataset": "shakespeare"
-  }
-  ```
-</details>
+## Training Tokenizers
 
-## Tokenizer Storage
+Given `output.txt` or a sequence of text files, we can train a tokenizer by executing `python train_tokenizer.py --dataset-paths {sequence of paths to text files}`.
+
+### Tokenizer Storage
 
 By default, each tokenizer is stored with two files `config.json` and `vocab_to_ind.json` under `data/tokenizers` directory such that:
 - `config.json`: records the basic configuration of the tokenizer.
 - `vocab_to_ind.json`: maps from each token to its token index. 
 
-If additional files are required to define the tokenizer, they will be stored together with the above two files.
+If additional files are required to define the tokenizer, they will be stored in conjunction with the above two files.
 
-## Checkpoints Storage
+## Training and evaluating Transformer Models
+
+- To train model, run `python train.py -e <epoch number> --tokenizer-path <tokenizer saved path> --dataset-paths <a sequence of paths to dataset text file> --enable-mixed-precision`. `--enable-wandb` is optional provided environment variable `WANDB_API_KEY` is available to upload training statistics to WandB.
+  Note: To use tmux with, for example, training script: 
+    ```bash
+    tmux new-session -d -s train 'python train.py -e 100 --tokenizer-path "data/bpe_tokenizer" --dataset-path "data/output.txt" --enable-wandb --enable-mixed-precision'
+    ```
+- To evaluate model on the test dataset, run `python eval.py -m <path to the model>`
+
+### Checkpoints Storage
 
 Checkpoints are stored under `checkpoints`.
 
@@ -168,10 +150,26 @@ If model parameters differ in the checkpoint, it will be noted by the checkpoint
 
 Similarly, `ctx64-dcdr1` suggests the model context (`block_size`) is 64, the number of decoder layers (`dcdr`) is 1. `bpe-ctx64-500threshold` suggests BPE tokenizer is used with 500 threshold and the model context is 64.
 
-# Unittests
+## Unittests
 
 - To run unittests of the folder after the environment is installed, execute `pytest .`
 - To run performance/profiling tests that are marked "skipped", execute `pytest -m skip`
 
 # Reference
-The complete text of Shakespeare's work can be found in [Folger Shakespeare Library](https://www.folger.edu/explore/shakespeares-works/all-works/). 
+
+This project uses early modern English dramatic texts from the following sources:
+
+- **Folger Shakespeare Library:** Shakespeare's plays were obtained from [Folger Shakespeare Library's digital text collection](https://www.folger.edu/explore/shakespeares-works/download/). I gratefully acknowledge the Folger Shakespeare Library and the editors of Folger Digital Texts for providing authoritative, machine-readable editions of Shakespeare's works.
+- **Early Modern English Drama (EMED)**: A digital anthology administered by the Folger Institute and Folger Shakespeare Library. I acknowledge EMED for providing access to the SHC corpus files through its corpus download platform.
+- **Shakespeare His Contemporaries (SHC):** A digital text corpus led by Martin Mueller at Northwestern University. I gratefully acknowledge the SHC project and its contributors for making the corpus available for research and educational use.
+
+The source texts were processed for Transformer-based language-model training. For details, refer to the comments of the preprocessor classes: 
+- For processing on the Shakespeare's texts, the processing is documented in `ShakespearePlayDatasetPreprocessor`
+- For SHC texts, the processing is documented in `EMEDDatasetPreprocessor` and `_SHCPreprocessor`
+
+The SHC and Folger Shakespeare texts are subject to their respective licensing terms. Thus, this project should not be used for commercial purposes. Please consult the original sources for details.
+
+Source links
+
+- Folger Shakespeare texts: https://www.folger.edu/explore/shakespeares-works/download/
+- EMED data and download documentation: https://emed.folger.edu/research-resources/data

@@ -1,7 +1,7 @@
 #!/bin/sh
 # download_shc.sh - Download the latest SHC XML for each play.
 #
-# Usage: ./download_shc.sh <links.txt> <output_dir>
+# Usage: ./download_shc.sh links.txt plays/
 #
 # For each play URL, fetch the page, find every SHC XML link, pick the
 # latest one (highest leading SHC id number), and save it as:
