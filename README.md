@@ -135,7 +135,7 @@ By default, each tokenizer is stored with two files `config.json` and `vocab_to_
 
 If additional files are required to define the tokenizer, they will be stored in conjunction with the above two files.
 
-## Training and evaluating Transformer Models
+## Training and Evaluating Transformer Models
 
 - To train model, run `python train.py -e <epoch number> --tokenizer-path <tokenizer saved path> --dataset-paths <a sequence of paths to dataset text file> --enable-mixed-precision`. `--enable-wandb` is optional provided environment variable `WANDB_API_KEY` is available to upload training statistics to WandB.
   Note: To use tmux with, for example, training script: 
