@@ -84,10 +84,10 @@ class Transformer(nn.Module):
         self.embeddings = nn.Embedding(vocab_size, self.dmodel)
         self.position_encoding = PositionalEncoding(block_size, self.dmodel)
 
-        self.dropout_encoder_embedding = nn.Dropout(dropout)
         self.dropout_pre_decoder_embedding = nn.Dropout(dropout)
 
         if not self.decoder_only:
+          self.dropout_encoder_embedding = nn.Dropout(dropout)
           self.encoder = nn.ModuleList(
               [Encoder(self.block_size, dropout=dropout, dmodel=self.dmodel, num_of_heads=num_of_heads) for _ in range(num_of_encoder_layers)]
           )
@@ -133,7 +133,7 @@ class Transformer(nn.Module):
           # decoder-only, x is the only input
           x = self.embeddings(token_x)
           x = self.position_encoding(x)
-          x = self.dropout_encoder_embedding(x)
+          x = self.dropout_pre_decoder_embedding(x)
           for layer in self.decoder:
               x = layer(x, None)
 
