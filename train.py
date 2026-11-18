@@ -16,6 +16,7 @@ from models.transformer import Transformer
 from utils.model_utils import make_model_saver, extract_model_config
 from utils.tokenizer_utils import load_tokenizer
 from utils.wandb_utils import setup_wandb
+from utils import set_seed
 
 
 def train(
@@ -148,7 +149,7 @@ if __name__ == "__main__":
   parser.add_argument('--enable-wandb', action='store_true')
   parser.add_argument('--enable-mixed-precision', action='store_true')
   parser.add_argument('--deterministic-training', action='store_true')
-
+    parser.add_argument('--seed', default=42, type=int)
   args = parser.parse_args()
   epochs = args.epochs
   tokenizer_path = args.tokenizer_path
@@ -156,7 +157,8 @@ if __name__ == "__main__":
   enable_wandb = args.enable_wandb
   enable_mixed_precision = args.enable_mixed_precision
   deterministic_training = args.deterministic_training
-
+    seed = args.seed
+    set_seed(seed)
   train_end = config['train_end']
   val_end = config['val_end']
 
@@ -181,7 +183,7 @@ if __name__ == "__main__":
   print("Loading tokenizer done.")
 
   print("Preparing dataset loader ...")
-  train_loader, val_loader, test_loader = prepare_dataset_loader(dataset_paths, tokenizer, train_end, val_end, block_size, batch_size)
+  train_loader, val_loader, test_loader = prepare_dataset_loader(dataset_paths, tokenizer, train_end, val_end, block_size, batch_size, seed=seed)
   print("Dataset loader ready.")
 
   model = Transformer(**extract_model_config(config)).to(device)

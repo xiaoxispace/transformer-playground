@@ -1,3 +1,4 @@
+import random
 import torch
 
 from torch.utils.data import DataLoader
@@ -37,16 +38,27 @@ def load_and_combine_dataset_tensors(dataset_paths, tokenizer, train_end, val_en
 
   return combined_train_tensors, combined_val_tensors, combined_test_tensors
 
+def _seed_worker(worker_id):
+    worker_seed = torch.initial_seed() % 2**32
+    random.seed(worker_seed)
+    try:
+        import numpy as np
+        np.random.seed(worker_seed)
+    except ImportError:
+        pass
 
-def prepare_dataset_loader(dataset_paths, tokenizer, train_end, val_end, block_size, batch_size):
+
+def prepare_dataset_loader(dataset_paths, tokenizer, train_end, val_end, block_size, batch_size, seed=None, num_workers=0):
   training_set_tensors, val_set_tensors, test_set_tensors = load_and_combine_dataset_tensors(
     dataset_paths, tokenizer, train_end, val_end
   )
   train_dataset = LanguageModelingDataset(training_set_tensors, block_size)
   val_dataset = LanguageModelingDataset(val_set_tensors, block_size)
   test_dataset = LanguageModelingDataset(test_set_tensors, block_size)
+    generator = torch.Generator().manual_seed(seed) if seed is not None else None
+    worker_init_fn = _seed_worker if (seed is not None and num_workers > 0) else None
 
-  train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+  train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, worker_init_fn=worker_init_fn, generator=generator)
   val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
   test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
   return train_loader, val_loader, test_loader

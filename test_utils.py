@@ -1,12 +1,14 @@
 import math
+import random
 import torch
 import torch.nn as nn
 
-from torch.utils.data import DataLoader, SequentialSampler
+from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
 
 from dataset import LanguageModelingDataset
 from utils.eval_utils import perplexity
 from hyperparams import *
+from utils import set_seed
 
 
 def test_perplexity():
@@ -57,3 +59,24 @@ def test_perplexity():
   expected_pp = math.exp(total_loss/total_tokens)
   pp = perplexity(model, loader)
   assert math.isclose(expected_pp, pp, rel_tol=1e-6), f"expected_pp: {expected_pp}; pp: {pp}"
+
+def test_deterministic_seeding():
+  dataset = TensorDataset(torch.arange(20))
+
+  set_seed(42)
+  py_rand_1 = random.random()
+  torch_rand_1 = torch.rand(4)
+  gen_1 = torch.Generator().manual_seed(42)
+  loader_1 = DataLoader(dataset, batch_size=4, shuffle=True, generator=gen_1)
+  batches_1 = [batch[0] for batch in loader_1]
+  
+  set_seed(42)
+  py_rand_2 = random.random()
+  torch_rand_2 = torch.rand(4)
+  gen_2 = torch.Generator().manual_seed(42)
+  loader_2 = DataLoader(dataset, batch_size=4, shuffle=True, generator=gen_2)
+  batches_2 = [batch[0] for batch in loader_2]
+  
+  assert py_rand_1 == py_rand_2
+  assert torch.equal(torch_rand_1, torch_rand_2)
+  assert all(torch.equal(b1, b2) for b1, b2 in zip(batches_1, batches_2))
